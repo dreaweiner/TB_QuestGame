@@ -13,35 +13,81 @@ namespace TB_QuestGame
     {
         #region ENUMERABLES
 
+        public enum Weapon
+        {
+            None,
+            Wand,
+            Potion,
+            Logic,
+            Broomstick
+        }
 
         #endregion
 
         #region FIELDS
 
+        private int _experiencePoints;
+        private int _health;
+        private int _lives;
+        private List<int> _spaceTimeLocationsVisited;
 
         #endregion
-        
+
         #region PROPERTIES
-        
+
+        public int ExperiencePoints
+        {
+            get { return _experiencePoints; }
+            set { _experiencePoints = value; }
+        }
+
+        public int Health
+        {
+            get { return _health; }
+            set { _health = value; }
+        }
+
+        public int Lives
+        {
+            get { return _lives; }
+            set { _lives = value; }
+        }
+
+        public List<int> SpaceTimeLocationsVisited
+        {
+            get { return _spaceTimeLocationsVisited; }
+            set { _spaceTimeLocationsVisited = value; }
+        }
 
         #endregion
-        
+
         #region CONSTRUCTORS
 
         public Player()
         {
-
+            _spaceTimeLocationsVisited = new List<int>();
         }
 
-        public Player(string name, RaceType race) : base(name, race)
+        public Player(string name, RaceType race, int spaceTimeLocationID) : base(name, race, spaceTimeLocationID)
         {
-
+            _spaceTimeLocationsVisited = new List<int>();
         }
 
         #endregion
-        
+
         #region METHODS
-        
+
+        public bool HasVisited(int _spaceTimeLocationID)
+        {
+            if (SpaceTimeLocationsVisited.Contains(_spaceTimeLocationID))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         #endregion
     }
