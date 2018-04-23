@@ -225,7 +225,7 @@ namespace TB_QuestGame
             ConsoleWindowControl.DisableResize();
             ConsoleWindowControl.DisableMaximize();
             ConsoleWindowControl.DisableMinimize();
-            Console.Title = "Harry Potter: The Chamber of Secrets";
+            Console.Title = "Harry Potter: The Philopher's Stone";
 
             //
             // set the default console window values
@@ -481,6 +481,8 @@ namespace TB_QuestGame
             DisplayGamePlayScreen("Mission Initialization - Complete", Text.InitializeMissionEchoPlayerInfo(player), ActionMenu.MissionIntro, "");
             GetContinueKey();
 
+            _viewStatus = ViewStatus.PlayingGame;
+
             return player;
         }
 
@@ -509,7 +511,7 @@ namespace TB_QuestGame
                 //
                 // get an integer from the player
                 //
-                GetInteger($"Enter your new location {_gamePlayer.Name}: ", 1, _gameUniverse.GetMaxSpaceTimeLocationId(), out spaceTimeLocationId);
+                GetInteger($"Enter your new chamber {_gamePlayer.Name}: ", 1, _gameUniverse.GetMaxSpaceTimeLocationId(), out spaceTimeLocationId);
 
                 //
                 // validate integer as a valid space-time location id and determine accessibility
@@ -523,12 +525,12 @@ namespace TB_QuestGame
                     else
                     {
                         ClearInputBox();
-                        DisplayInputErrorMessage("It appears you attempting to travel to an inaccessible location. Please try again.");
+                        DisplayInputErrorMessage("It appears you attempting to travel to an inaccessible chamber. Please try again.");
                     }
                 }
                 else
                 {
-                    DisplayInputErrorMessage("It appears you entered an invalid Space-Time location id. Please try again.");
+                    DisplayInputErrorMessage("It appears you entered an invalid chamber ID. Please try again.");
                 }
             }
 
@@ -577,7 +579,7 @@ namespace TB_QuestGame
                 visitedSpaceTimeLocations.Add(_gameUniverse.GetSpaceTimeLocationById(spaceTimeLocationId));
             }
 
-            DisplayGamePlayScreen("Space-Time Locations Visited", Text.VisitedLocations(visitedSpaceTimeLocations), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Chambers Visited", Text.VisitedLocations(visitedSpaceTimeLocations), ActionMenu.MainMenu, "");
         }
 
         #endregion
