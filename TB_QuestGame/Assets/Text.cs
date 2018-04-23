@@ -62,7 +62,7 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string InitializeMissionGetTravelerName()
+        public static string InitializeMissionGetPlayerName()
         {
             string messageBoxText =
                 "Enter your name user name.\n" +
@@ -72,10 +72,10 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string InitializeMissionGetTravelerAge(Player gameTraveler)
+        public static string InitializeMissionGetPlayerAge(Player gameplayer)
         {
             string messageBoxText =
-                $"Very good then, we will call you {gameTraveler.Name} on this mission.\n" +
+                $"Very good then, we will call you {gameplayer.Name} on this mission.\n" +
                 " \n" +
                 "Enter your age below.\n" +
                 " \n";
@@ -83,10 +83,10 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string InitializeMissionGetTravelerRace(Player gameTraveler)
+        public static string InitializeMissionGetPlayerRace(Player gameplayer)
         {
             string messageBoxText =
-                $"{gameTraveler.Name}, it will be important for us to know your Wizarding World identifier on this mission.\n" +
+                $"{gameplayer.Name}, it will be important for us to know your Wizarding World identifier on this mission.\n" +
                 " \n" +
                 "Enter your identifier below.\n" +
                 " \n" +
@@ -108,17 +108,17 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string InitializeMissionEchoTravelerInfo(Player gameTraveler)
+        public static string InitializeMissionEchoPlayerInfo(Player gameplayer)
         {
             string messageBoxText =
-                $"Very good then {gameTraveler.Name}.\n" +
+                $"Very good then {gameplayer.Name}.\n" +
                 " \n" +
                 "It appears we have all the necessary data to begin your mission. You will find it" +
                 " listed below.\n" +
                 " \n" +
-                $"\tUser Name: {gameTraveler.Name}\n" +
-                $"\tUser Age: {gameTraveler.Age}\n" +
-                $"\tUser Identifier: {gameTraveler.Race}\n" +
+                $"\tUser Name: {gameplayer.Name}\n" +
+                $"\tUser Age: {gameplayer.Age}\n" +
+                $"\tUser Identifier: {gameplayer.Race}\n" +
                 " \n" +
                 "Press any key to begin your mission.";
 
@@ -126,22 +126,161 @@ namespace TB_QuestGame
         }
 
         #endregion
-
-        #endregion
-
+        
         #region MAIN MENU ACTION SCREENS
 
-        public static string TravelerInfo(Player gameTraveler)
+        public static string PlayerInfo(Player gameplayer)
         {
             string messageBoxText =
-                $"\tUser Name: {gameTraveler.Name}\n" +
-                $"\tUser Age: {gameTraveler.Age}\n" +
-                $"\tUser Identifier: {gameTraveler.Race}\n" +
+                $"\tUser Name: {gameplayer.Name}\n" +
+                $"\tUser Age: {gameplayer.Age}\n" +
+                $"\tUser Identifier: {gameplayer.Race}\n" +
                 " \n";
 
             return messageBoxText;
         }
-        
+
+        public static string ListSpaceTimeLocations(IEnumerable<SpaceTimeLocation> spaceTimeLocations)
+        {
+            string messageBoxText =
+                "Space-Time Locations\n" +
+                " \n" +
+
+                //
+                // display table header
+                //
+                "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
+
+            //
+            // display all locations
+            //
+            string spaceTimeLocationList = null;
+            foreach (SpaceTimeLocation spaceTimeLocation in spaceTimeLocations)
+            {
+                spaceTimeLocationList +=
+                    $"{spaceTimeLocation.SpaceTimeLocationID}".PadRight(10) +
+                    $"{spaceTimeLocation.CommonName}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += spaceTimeLocationList;
+
+            return messageBoxText;
+        }
+
+        ///<summary>
+        /// look around
+        /// </summary>
+        public static string LookAround(SpaceTimeLocation spaceTimeLocation)
+        {
+            string messageBoxText =
+                $"Current Location: {spaceTimeLocation.CommonName}\n" +
+                " \n" +
+                spaceTimeLocation.GeneralContents;
+
+            return messageBoxText;
+        }
+
+        ///<summary>
+        /// travel
+        /// </summary>
+        public static string Travel(Player gametraveler, List<SpaceTimeLocation> spaceTimeLocations)
+        {
+            string messageBoxText =
+                $"{gametraveler.Name}, Aion Base will need to know the name of the new location.\n" +
+                " \n" +
+                "Enter the ID number of your desired location from the table below.\n" +
+                " \n" +
+
+                //
+                // display table header
+                //
+                "ID".PadRight(10) + "Name".PadRight(30) + "Accessible".PadRight(10) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "-------".PadRight(10) + "\n";
+
+            //
+            // display all locations except the current location
+            //
+            string spaceTimeLocationList = null;
+            foreach (SpaceTimeLocation spaceTimeLocation in spaceTimeLocations)
+            {
+                if (spaceTimeLocation.SpaceTimeLocationID != gametraveler.SpaceTimeLocationID)
+                {
+                    spaceTimeLocationList +=
+                        $"{spaceTimeLocation.SpaceTimeLocationID}".PadRight(10) +
+                        $"{spaceTimeLocation.CommonName}".PadRight(30) +
+                        $"{spaceTimeLocation.Accessible}".PadRight(10) +
+                        Environment.NewLine;
+                }
+            }
+
+            messageBoxText += spaceTimeLocationList;
+
+            return messageBoxText;
+        }
+
+        /// <summary>
+        /// display current location information
+        /// </summary>
+        /// <param name="spaceTimeLocation"></param>
+        /// <returns></returns>
+        public static string CurrentLocationInfo(SpaceTimeLocation spaceTimeLocation)
+        {
+            string messageBoxText =
+                $"Current Location: {spaceTimeLocation.CommonName}\n" +
+                " \n" +
+                spaceTimeLocation.Description;
+
+            return messageBoxText;
+        }
+
+        /// <summary>
+        /// show the visited locations
+        /// </summary>
+        /// <param name="spaceTimeLocations"></param>
+        /// <returns></returns>
+        public static string VisitedLocations(IEnumerable<SpaceTimeLocation> spaceTimeLocations)
+        {
+            string messageBoxText =
+                "Space-Time Locations Visited\n" +
+                " \n" +
+
+                //
+                // display table header
+                //
+                "ID".PadRight(10) + "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) + "----------------------".PadRight(30) + "\n";
+
+            //
+            // display all locations
+            //
+            string spaceTimeLocationList = null;
+            foreach (SpaceTimeLocation spaceTimeLocation in spaceTimeLocations)
+            {
+                spaceTimeLocationList +=
+                    $"{spaceTimeLocation.SpaceTimeLocationID}".PadRight(10) +
+                    $"{spaceTimeLocation.CommonName}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += spaceTimeLocationList;
+
+            return messageBoxText;
+        }
+
+        public static List<string> StatusBox(Player player, Universe universe)
+        {
+            List<string> statusBoxText = new List<string>();
+
+            statusBoxText.Add($"Experience Points: {player.ExperiencePoints}\n");
+            statusBoxText.Add($"Health: {player.Health}\n");
+            statusBoxText.Add($"Lives: {player.Lives}\n");
+
+            return statusBoxText;
+        }
+
         #endregion
     }
 }
+# endregion

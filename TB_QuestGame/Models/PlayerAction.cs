@@ -23,6 +23,8 @@ namespace TB_QuestGame
         PlayerInfo,
         PlayerInventory,
         PlayerTreasure,
+        PlayerLocationsVisited,
+        ListSpaceTimeLocations,
         ListDestinations,
         ListItems,
         ListTreasures,

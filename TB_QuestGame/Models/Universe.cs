@@ -93,7 +93,7 @@ namespace TB_QuestGame
         public bool IsAccessibleLocation(int spaceTimeLocationId)
         {
             SpaceTimeLocation spaceTimeLocation = GetSpaceTimeLocationById(spaceTimeLocationId);
-            if (spaceTimeLocation.Accessable == true)
+            if (spaceTimeLocation.Accessible == true)
             {
                 return true;
             }
@@ -149,7 +149,7 @@ namespace TB_QuestGame
             if (spaceTimeLocation == null)
             {
                 string feedbackMessage = $"The Space-Time Location ID {Id} does not exist in the current Universe.";
-                throw new ArgumentException(Id.ToString(), feedbackMessage);
+                //throw new ArgumentException(Id.ToString(), feedbackMessage);
             }
 
             return spaceTimeLocation;

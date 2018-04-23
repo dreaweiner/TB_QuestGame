@@ -27,7 +27,7 @@ namespace TB_QuestGame
             MenuTitle = "Initialize Mission",
             MenuChoices = new Dictionary<char, PlayerAction>()
                 {
-                    { '1', PlayerAction.Exit }
+                    { '0', PlayerAction.Exit }
                 }
         };
 
@@ -38,18 +38,22 @@ namespace TB_QuestGame
             MenuChoices = new Dictionary<char, PlayerAction>()
                 {
                     { '1', PlayerAction.PlayerInfo },
-                    { '2', PlayerAction.Exit }
+                    { '2', PlayerAction.LookAround },
+                    { '3', PlayerAction.Travel },
+                    { '4', PlayerAction.PlayerLocationsVisited },
+                    { '5', PlayerAction.ListSpaceTimeLocations },
+                    { '0', PlayerAction.Exit }
                 }
         };
 
-        //public static Menu ManageTraveler = new Menu()
+        //public static Menu Manageplayer = new Menu()
         //{
-        //    MenuName = "ManageTraveler",
-        //    MenuTitle = "Manage Traveler",
+        //    MenuName = "Manageplayer",
+        //    MenuTitle = "Manage player",
         //    MenuChoices = new Dictionary<char, PlayerAction>()
         //            {
         //                PlayerAction.MissionSetup,
-        //                PlayerAction.TravelerInfo,
+        //                PlayerAction.playerInfo,
         //                PlayerAction.Exit
         //            }
         //};

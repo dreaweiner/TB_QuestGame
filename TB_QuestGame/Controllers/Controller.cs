@@ -15,7 +15,9 @@ namespace TB_QuestGame
 
         private ConsoleView _gameConsoleView;
         private Player _gamePlayer;
+        private Universe _gameUniverse;
         private bool _playingGame;
+        private SpaceTimeLocation _currentLocation;
 
         #endregion
 
@@ -49,7 +51,8 @@ namespace TB_QuestGame
         private void InitializeGame()
         {
             _gamePlayer = new Player();
-            _gameConsoleView = new ConsoleView(_gamePlayer);
+            _gameUniverse = new Universe();
+            _gameConsoleView = new ConsoleView(_gamePlayer, _gameUniverse);
             _playingGame = true;
 
             Console.CursorVisible = false;
@@ -60,7 +63,7 @@ namespace TB_QuestGame
         /// </summary>
         private void ManageGameLoop()
         {
-            PlayerAction travelerActionChoice = PlayerAction.None;
+            PlayerAction playerActionChoice = PlayerAction.None;
 
             //
             // display splash screen
@@ -82,13 +85,14 @@ namespace TB_QuestGame
             _gameConsoleView.GetContinueKey();
 
             //
-            // initialize the mission traveler
+            // initialize the mission player
             // 
             InitializeMission();
 
             //
             // prepare game play screen
             //
+            _currentLocation = _gameUniverse.GetSpaceTimeLocationById(_gamePlayer.SpaceTimeLocationID);
             _gameConsoleView.DisplayGamePlayScreen("Current Location", Text.CurrrentLocationInfo(), ActionMenu.MainMenu, "");
 
             //
@@ -96,18 +100,48 @@ namespace TB_QuestGame
             //
             while (_playingGame)
             {
-                travelerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu);
+                //
+                // process all flags, events, and stats
+                //
+                UpdateGameStatus();
+
+                playerActionChoice = _gameConsoleView.GetActionMenuChoice(ActionMenu.MainMenu); //do I need this?
 
                 //
                 // choose an action based on the user's menu choice
                 //
-                switch (travelerActionChoice)
+                switch (playerActionChoice)
                 {
                     case PlayerAction.None:
                         break;
 
                     case PlayerAction.PlayerInfo:
-                        _gameConsoleView.DisplayTravelerInfo();
+                        _gameConsoleView.DisplayPlayerInfo();
+                        break;
+
+                    case PlayerAction.ListSpaceTimeLocations:
+                        _gameConsoleView.DisplayListOfSpaceTimeLocations();
+                        break;
+
+                    case PlayerAction.LookAround:
+                        _gameConsoleView.DisplayLookAround();
+                        break;
+
+                    case PlayerAction.Travel:
+                        //
+                        // get new location choice and update the current location property
+                        //                        
+                        _gamePlayer.SpaceTimeLocationID = _gameConsoleView.DisplayGetNextLocation();
+                        _currentLocation = _gameUniverse.GetSpaceTimeLocationById(_gamePlayer.SpaceTimeLocationID);
+
+                        //
+                        // display the new space-time location info
+                        //
+                        _gameConsoleView.DisplayCurrentLocationInfo();
+                        break;
+
+                    case PlayerAction.PlayerLocationsVisited:
+                        _gameConsoleView.DisplayLocationsVisited();
                         break;
 
                     case PlayerAction.Exit:
@@ -130,11 +164,47 @@ namespace TB_QuestGame
         /// </summary>
         private void InitializeMission()
         {
-            Player traveler = _gameConsoleView.GetInitialTravelerInfo();
+            Player player = _gameConsoleView.GetInitialPlayerInfo();
 
-            _gamePlayer.Name = traveler.Name;
-            _gamePlayer.Age = traveler.Age;
-            _gamePlayer.Race = traveler.Race;
+            _gamePlayer.Name = player.Name;
+            _gamePlayer.Age = player.Age;
+            _gamePlayer.Race = player.Race;
+            _gamePlayer.SpaceTimeLocationID = 1;
+
+            _gamePlayer.ExperiencePoints = 0;
+            _gamePlayer.Health = 100;
+            _gamePlayer.Lives = 3;
+        }
+
+        private void UpdateGameStatus()
+        {
+            if (!_gamePlayer.HasVisited(_currentLocation.SpaceTimeLocationID))
+            {
+                //
+                // add new location to the list of visited locations if this is a first visit
+                //
+                _gamePlayer.LocationsVisited.Add(_currentLocation.SpaceTimeLocationID);
+
+                //
+                // update experience points for visiting locations
+                //
+                _gamePlayer.ExperiencePoints += _currentLocation.ExperiencePoints;
+
+            }
+
+            //if (_gamePlayer.Inventory.Contains(_gameUniverse.GetGameObjectById(7)))
+            //{
+                //_gameUniverse.GetSpaceTimeLocationById(3).Accessible = true;
+            //}
+
+            //if (_gamePlayer.Inventory.Contains(_gameUniverse.GetGameObjectById(7)) &&
+               //_gamePlayer.Inventory.Contains(_gameUniverse.GetGameObjectById(8)))
+            //{
+                //
+                // update experience points for visiting locations
+                //
+                //_gamePlayer.ExperiencePoints += _currentLocation.ExperiencePoints;
+            //}
         }
 
         #endregion

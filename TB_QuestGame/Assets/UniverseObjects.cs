@@ -20,7 +20,7 @@ namespace TB_QuestGame
                 Description = "Fluffy's Chamber is a large room with little but the three headed dog" +
                     "known as Fluffy and a trap door on the floor and a harp playing music.\n",
                 GeneralContents = "The room is a large and well lit room. There is a harp and Fluffy. ",
-                Accessable = true,
+                Accessible = true,
                 ExperiencePoints = 10
             },
 
@@ -32,7 +32,7 @@ namespace TB_QuestGame
                 UniversalLocation = "2",
                 Description = "The Devil's Snare room is a dark room full of plant like material. ",
                 GeneralContents = "The room is full of Devil's Snare.",
-                Accessable = false,
+                Accessible = false,
                 ExperiencePoints = 10
             },
 
@@ -45,7 +45,7 @@ namespace TB_QuestGame
                 Description = "The room is a large chamber with valted ceilings. There is a single " +
                               "broomstick and hundreds of bird like keys floating about the room. ",
                 GeneralContents = "There are thousands of keys and a broomstick. The door across the chamber is locked.",
-                Accessable = false,
+                Accessible = false,
                 ExperiencePoints = 20
             },
 
@@ -59,7 +59,7 @@ namespace TB_QuestGame
                               "is a giant chessboard. Around the edges of the board is a graveyard of conquered pieces. " +
                               "As you walk across the chessboard, the opposing chess team's pawns stop you from proceeding forward.",
                 GeneralContents = "The lives sized chessboard.",
-                Accessable = false,
+                Accessible = false,
                 ExperiencePoints = 50
             },
 
@@ -86,7 +86,7 @@ namespace TB_QuestGame
                               "Fourth, the second left and the second on the right" +
                               "Are twins once you taste them, though different at first sight.",
                 GeneralContents = "The poem and seven differently shaped bottles.",
-                Accessable = false,
+                Accessible = false,
                 ExperiencePoints = 60
             },
 
@@ -98,7 +98,7 @@ namespace TB_QuestGame
                 UniversalLocation = "6",
                 Description = "The room has the Mirror of Erised and an additional character. ",
                 GeneralContents = "The Mirror of Erised is in the room.",
-                Accessable = false,
+                Accessible = false,
                 ExperiencePoints = 100
             },
         };

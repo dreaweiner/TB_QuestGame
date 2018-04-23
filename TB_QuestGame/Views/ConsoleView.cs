@@ -11,12 +11,25 @@ namespace TB_QuestGame
     /// </summary>
     public class ConsoleView
     {
+        #region ENUMS
+
+        private enum ViewStatus
+        {
+            PlayerInitialization,
+            PlayingGame
+        }
+
+        #endregion
+
         #region FIELDS
 
         //
         // declare game objects for the ConsoleView object to use
         //
-        Player _gameTraveler;
+        Player _gamePlayer;
+        Universe _gameUniverse;
+
+        ViewStatus _viewStatus;
 
         #endregion
 
@@ -29,9 +42,12 @@ namespace TB_QuestGame
         /// <summary>
         /// default constructor to create the console view objects
         /// </summary>
-        public ConsoleView(Player gameTraveler)
+        public ConsoleView(Player gamePlayer, Universe gameUniverse)
         {
-            _gameTraveler = gameTraveler;
+            _gamePlayer = gamePlayer;
+            _gameUniverse = gameUniverse;
+
+            _viewStatus = ViewStatus.PlayerInitialization;
 
             InitializeDisplay();
         }
@@ -39,6 +55,7 @@ namespace TB_QuestGame
         #endregion
 
         #region METHODS
+        
         /// <summary>
         /// display all of the elements on the game play screen on the console
         /// </summary>
@@ -61,6 +78,7 @@ namespace TB_QuestGame
             DisplayMessageBox(messageBoxHeaderText, messageBoxText);
             DisplayMenuBox(menu);
             DisplayInputBox();
+            DisplayStatusBox();
         }
 
         /// <summary>
@@ -78,13 +96,25 @@ namespace TB_QuestGame
         public PlayerAction GetActionMenuChoice(Menu menu)
         {
             PlayerAction choosenAction = PlayerAction.None;
+            Console.CursorVisible = false;
 
             //
-            // TODO validate menu choices
+            // create an array of valid keys from menu dictionary
             //
-            ConsoleKeyInfo keyPressedInfo = Console.ReadKey();
-            char keyPressed = keyPressedInfo.KeyChar;
+            char[] validKeys = menu.MenuChoices.Keys.ToArray();
+
+            //
+            // validate menu choices
+            //
+            char keyPressed;
+            do
+            {
+                ConsoleKeyInfo keyPressedInfo = Console.ReadKey(true);
+                keyPressed = keyPressedInfo.KeyChar;
+            } while (!validKeys.Contains(keyPressed));
+            
             choosenAction = menu.MenuChoices[keyPressed];
+            Console.CursorVisible = true;
 
             return choosenAction;
         }
@@ -195,7 +225,7 @@ namespace TB_QuestGame
             ConsoleWindowControl.DisableResize();
             ConsoleWindowControl.DisableMaximize();
             ConsoleWindowControl.DisableMinimize();
-            Console.Title = "The Aion Project";
+            Console.Title = "Harry Potter: The Chamber of Secrets";
 
             //
             // set the default console window values
@@ -292,9 +322,66 @@ namespace TB_QuestGame
                 Console.Write(messageTextLine);
                 row++;
             }
-
         }
 
+        /// <summary>
+        /// draw the status box on the game screen
+        /// </summary>
+        public void DisplayStatusBox()
+        {
+            Console.BackgroundColor = ConsoleTheme.InputBoxBackgroundColor;
+            Console.ForegroundColor = ConsoleTheme.InputBoxBorderColor;
+
+            //
+            // display the outline for the status box
+            //
+            ConsoleWindowHelper.DisplayBoxOutline(
+                ConsoleLayout.StatusBoxPositionTop,
+                ConsoleLayout.StatusBoxPositionLeft,
+                ConsoleLayout.StatusBoxWidth,
+                ConsoleLayout.StatusBoxHeight);
+
+            //
+            // display the text for the status box if playing game
+            //
+            if (_viewStatus == ViewStatus.PlayingGame)
+            {
+                //
+                // display status box header with title
+                //
+                Console.BackgroundColor = ConsoleTheme.StatusBoxBorderColor;
+                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+                Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 2, ConsoleLayout.StatusBoxPositionTop + 1);
+                Console.Write(ConsoleWindowHelper.Center("Game Stats", ConsoleLayout.StatusBoxWidth - 4));
+                Console.BackgroundColor = ConsoleTheme.StatusBoxBackgroundColor;
+                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+
+                //
+                // display stats
+                //
+                int startingRow = ConsoleLayout.StatusBoxPositionTop + 3;
+                int row = startingRow;
+                foreach (string statusTextLine in Text.StatusBox(_gamePlayer, _gameUniverse))
+                {
+                    Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 3, row);
+                    Console.Write(statusTextLine);
+                    row++;
+                }
+            }
+            else
+            {
+                //
+                // display status box header without header
+                //
+                Console.BackgroundColor = ConsoleTheme.StatusBoxBorderColor;
+                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+                Console.SetCursorPosition(ConsoleLayout.StatusBoxPositionLeft + 2, ConsoleLayout.StatusBoxPositionTop + 1);
+                Console.Write(ConsoleWindowHelper.Center("", ConsoleLayout.StatusBoxWidth - 4));
+                Console.BackgroundColor = ConsoleTheme.StatusBoxBackgroundColor;
+                Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
+            }
+        }
+        
         /// <summary>
         /// draw the input box on the game screen
         /// </summary>
@@ -354,10 +441,10 @@ namespace TB_QuestGame
         /// <summary>
         /// get the player's initial information at the beginning of the game
         /// </summary>
-        /// <returns>traveler object with all properties updated</returns>
-        public Player GetInitialTravelerInfo()
+        /// <returns>player object with all properties updated</returns>
+        public Player GetInitialPlayerInfo()
         {
-            Player traveler = new Player();
+            Player player = new Player();
 
             //
             // intro
@@ -366,42 +453,131 @@ namespace TB_QuestGame
             GetContinueKey();
 
             //
-            // get traveler's name
+            // get player's name
             //
-            DisplayGamePlayScreen("Mission Initialization - Name", Text.InitializeMissionGetTravelerName(), ActionMenu.MissionIntro, "");
+            DisplayGamePlayScreen("Mission Initialization - Name", Text.InitializeMissionGetPlayerName(), ActionMenu.MissionIntro, "");
             DisplayInputBoxPrompt("Enter your name: ");
-            traveler.Name = GetString();
+            player.Name = GetString();
 
             //
-            // get traveler's age
+            // get player's age
             //
-            DisplayGamePlayScreen("Mission Initialization - Age", Text.InitializeMissionGetTravelerAge(traveler), ActionMenu.MissionIntro, "");
-            int gameTravelerAge;
+            DisplayGamePlayScreen("Mission Initialization - Age", Text.InitializeMissionGetPlayerAge(player), ActionMenu.MissionIntro, "");
+            int gamePlayerAge;
 
-            GetInteger($"Enter your age {traveler.Name}: ", 0, 1000000, out gameTravelerAge);
-            traveler.Age = gameTravelerAge;
-
-            //
-            // get traveler's race
-            //
-            DisplayGamePlayScreen("Mission Initialization - Race", Text.InitializeMissionGetTravelerRace(traveler), ActionMenu.MissionIntro, "");
-            DisplayInputBoxPrompt($"Enter your race {traveler.Name}: ");
-            traveler.Race = GetRace();
+            GetInteger($"Enter your age {player.Name}: ", 0, 1000000, out gamePlayerAge);
+            player.Age = gamePlayerAge;
 
             //
-            // echo the traveler's info
+            // get player's race
             //
-            DisplayGamePlayScreen("Mission Initialization - Complete", Text.InitializeMissionEchoTravelerInfo(traveler), ActionMenu.MissionIntro, "");
+            DisplayGamePlayScreen("Mission Initialization - Race", Text.InitializeMissionGetPlayerRace(player), ActionMenu.MissionIntro, "");
+            DisplayInputBoxPrompt($"Enter your race {player.Name}: ");
+            player.Race = GetRace();
+
+            //
+            // echo the player's info
+            //
+            DisplayGamePlayScreen("Mission Initialization - Complete", Text.InitializeMissionEchoPlayerInfo(player), ActionMenu.MissionIntro, "");
             GetContinueKey();
 
-            return traveler;
+            return player;
+        }
+
+        /// <summary>
+        /// show the current location info
+        /// </summary>
+        public void DisplayCurrentLocationInfo()
+        {
+            SpaceTimeLocation currentSpaceTimeLocation = _gameUniverse.GetSpaceTimeLocationById(_gamePlayer.SpaceTimeLocationID);
+            DisplayGamePlayScreen("Current Location", Text.CurrentLocationInfo(currentSpaceTimeLocation), ActionMenu.MainMenu, "");
+        }
+
+        /// <summary>
+        /// display and get next locations
+        /// </summary>
+        /// <returns></returns>
+        public int DisplayGetNextLocation()
+        {
+            int spaceTimeLocationId = 0;
+            bool validSpaceTimeLocationId = false;
+
+            DisplayGamePlayScreen("Travel to a Chamber", Text.Travel(_gamePlayer, _gameUniverse.SpaceTimeLocations), ActionMenu.MainMenu, "");
+
+            while (!validSpaceTimeLocationId)
+            {
+                //
+                // get an integer from the player
+                //
+                GetInteger($"Enter your new location {_gamePlayer.Name}: ", 1, _gameUniverse.GetMaxSpaceTimeLocationId(), out spaceTimeLocationId);
+
+                //
+                // validate integer as a valid space-time location id and determine accessibility
+                //
+                if (_gameUniverse.IsValidSpaceTimeLocationId(spaceTimeLocationId))
+                {
+                    if (_gameUniverse.IsAccessibleLocation(spaceTimeLocationId))
+                    {
+                        validSpaceTimeLocationId = true;
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you attempting to travel to an inaccessible location. Please try again.");
+                    }
+                }
+                else
+                {
+                    DisplayInputErrorMessage("It appears you entered an invalid Space-Time location id. Please try again.");
+                }
+            }
+
+            return spaceTimeLocationId;
         }
 
         #region ----- display responses to menu action choices -----
 
-        public void DisplayTravelerInfo()
+        /// <summary>
+        /// display player info
+        /// </summary>
+        public void DisplayPlayerInfo()
         {
-            DisplayGamePlayScreen("Traveler Information", Text.TravelerInfo(_gameTraveler), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Player Information", Text.PlayerInfo(_gamePlayer), ActionMenu.MainMenu, "");
+        }
+
+        ///<summary>
+        /// display list of locations
+        /// </summary>
+        public void DisplayListOfSpaceTimeLocations()
+        {
+            DisplayGamePlayScreen("List: Locations", Text.ListSpaceTimeLocations(_gameUniverse.SpaceTimeLocations), ActionMenu.MainMenu, "");
+        }
+
+        ///<summary>
+        /// display look around
+        /// </summary>
+        public void DisplayLookAround()
+        {
+            SpaceTimeLocation currentSpaceTimeLocation = _gameUniverse.GetSpaceTimeLocationById(_gamePlayer.SpaceTimeLocationID);
+            DisplayGamePlayScreen("Current Location", Text.LookAround(currentSpaceTimeLocation), ActionMenu.MainMenu, "");
+
+        }
+
+        /// <summary>
+        /// display locations visited to the user
+        /// </summary>
+        public void DisplayLocationsVisited()
+        {
+            //
+            // generate a list of space time locations that have been visited
+            //
+            List<SpaceTimeLocation> visitedSpaceTimeLocations = new List<SpaceTimeLocation>();
+            foreach (int spaceTimeLocationId in _gamePlayer.LocationsVisited)
+            {
+                visitedSpaceTimeLocations.Add(_gameUniverse.GetSpaceTimeLocationById(spaceTimeLocationId));
+            }
+
+            DisplayGamePlayScreen("Space-Time Locations Visited", Text.VisitedLocations(visitedSpaceTimeLocations), ActionMenu.MainMenu, "");
         }
 
         #endregion

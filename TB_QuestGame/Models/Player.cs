@@ -29,7 +29,7 @@ namespace TB_QuestGame
         private int _experiencePoints;
         private int _health;
         private int _lives;
-        private List<int> _spaceTimeLocationsVisited;
+        private List<int> _locationsVisited;
 
         #endregion
 
@@ -53,10 +53,10 @@ namespace TB_QuestGame
             set { _lives = value; }
         }
 
-        public List<int> SpaceTimeLocationsVisited
+        public List<int> LocationsVisited
         {
-            get { return _spaceTimeLocationsVisited; }
-            set { _spaceTimeLocationsVisited = value; }
+            get { return _locationsVisited; }
+            set { _locationsVisited = value; }
         }
 
         #endregion
@@ -65,21 +65,26 @@ namespace TB_QuestGame
 
         public Player()
         {
-            _spaceTimeLocationsVisited = new List<int>();
+            _locationsVisited = new List<int>();
         }
 
         public Player(string name, RaceType race, int spaceTimeLocationID) : base(name, race, spaceTimeLocationID)
         {
-            _spaceTimeLocationsVisited = new List<int>();
+            _locationsVisited = new List<int>();
         }
 
         #endregion
 
         #region METHODS
 
+        /// <summary>
+        /// has visited
+        /// </summary>
+        /// <param name="_spaceTimeLocationID"></param>
+        /// <returns></returns>
         public bool HasVisited(int _spaceTimeLocationID)
         {
-            if (SpaceTimeLocationsVisited.Contains(_spaceTimeLocationID))
+            if (LocationsVisited.Contains(_spaceTimeLocationID))
             {
                 return true;
             }
