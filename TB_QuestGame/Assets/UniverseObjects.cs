@@ -33,7 +33,7 @@ namespace TB_QuestGame
                 Description = "The Devil's Snare room is a dark room full of plant like material. ",
                 GeneralContents = "The room is full of Devil's Snare.",
                 Accessible = false,
-                ExperiencePoints = 10
+                ExperiencePoints = 20
             },
 
             new SpaceTimeLocation
@@ -46,7 +46,7 @@ namespace TB_QuestGame
                               "broomstick and hundreds of bird like keys floating about the room. ",
                 GeneralContents = "There are thousands of keys and a broomstick. The door across the chamber is locked.",
                 Accessible = false,
-                ExperiencePoints = 20
+                ExperiencePoints = 30
             },
 
             new SpaceTimeLocation
