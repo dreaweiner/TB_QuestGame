@@ -582,6 +582,14 @@ namespace TB_QuestGame
             DisplayGamePlayScreen("Chambers Visited", Text.VisitedLocations(visitedSpaceTimeLocations), ActionMenu.MainMenu, "");
         }
 
+        /// <summary>
+        /// list all of the game objects
+        /// </summary>
+        public void DisplayListOfAllGameObjects()
+        {
+            DisplayGamePlayScreen("List: Game Objects", Text.ListAllGameObjects(_gameUniverse.GameObjects), ActionMenu.AdminMenu, "");
+        }
+
         #endregion
 
         #endregion

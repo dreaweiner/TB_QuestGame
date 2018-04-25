@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace TB_QuestGame
 {
-    public class UniverseObjects
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class UniverseObjects
     {
         public static List<SpaceTimeLocation> SpaceTimeLocations = new List<SpaceTimeLocation>()
         {
