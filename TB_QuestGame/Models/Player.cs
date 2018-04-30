@@ -13,6 +13,9 @@ namespace TB_QuestGame
     {
         #region ENUMERABLES
 
+        /// <summary>
+        /// weapon enum
+        /// </summary>
         public enum Weapon
         {
             None,
@@ -30,7 +33,7 @@ namespace TB_QuestGame
         private int _health;
         private int _lives;
         private List<int> _locationsVisited;
-
+        
         #endregion
 
         #region PROPERTIES
@@ -58,16 +61,25 @@ namespace TB_QuestGame
             get { return _locationsVisited; }
             set { _locationsVisited = value; }
         }
-
+        
         #endregion
 
         #region CONSTRUCTORS
 
+        /// <summary>
+        /// player constructor
+        /// </summary>
         public Player()
         {
             _locationsVisited = new List<int>();
         }
 
+        /// <summary>
+        /// player constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="race"></param>
+        /// <param name="spaceTimeLocationID"></param>
         public Player(string name, RaceType race, int spaceTimeLocationID) : base(name, race, spaceTimeLocationID)
         {
             _locationsVisited = new List<int>();

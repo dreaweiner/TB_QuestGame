@@ -16,7 +16,8 @@ namespace TB_QuestGame
         {
             Controller gameController = new Controller();
 
-            Console.ReadKey();
+            Console.ReadKey(); 
+            //updates
         }
 
 

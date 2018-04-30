@@ -13,6 +13,9 @@ namespace TB_QuestGame
     {
         #region ENUMS
 
+        /// <summary>
+        /// view status enum
+        /// </summary>
         private enum ViewStatus
         {
             PlayerInitialization,
@@ -55,7 +58,7 @@ namespace TB_QuestGame
         #endregion
 
         #region METHODS
-        
+
         /// <summary>
         /// display all of the elements on the game play screen on the console
         /// </summary>
@@ -112,7 +115,7 @@ namespace TB_QuestGame
                 ConsoleKeyInfo keyPressedInfo = Console.ReadKey(true);
                 keyPressed = keyPressedInfo.KeyChar;
             } while (!validKeys.Contains(keyPressed));
-            
+
             choosenAction = menu.MenuChoices[keyPressed];
             Console.CursorVisible = true;
 
@@ -137,20 +140,32 @@ namespace TB_QuestGame
             bool validResponse = false;
             integerChoice = 0;
 
+            //
+            // validate on range if either min value and max value are not e
+            //
+            bool validateRange = (minimumValue != 0 || maximumValue != 0);
+
             DisplayInputBoxPrompt(prompt);
             while (!validResponse)
             {
                 if (int.TryParse(Console.ReadLine(), out integerChoice))
                 {
-                    if (integerChoice >= minimumValue && integerChoice <= maximumValue)
+                    if (validateRange)
                     {
-                        validResponse = true;
+                        if (integerChoice >= minimumValue && integerChoice <= maximumValue)
+                        {
+                            validResponse = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage($"You must enter an integer value between {minimumValue} and {maximumValue}. Please try again.");
+                            DisplayInputBoxPrompt(prompt);
+                        }
                     }
                     else
                     {
-                        ClearInputBox();
-                        DisplayInputErrorMessage($"You must enter an integer value between {minimumValue} and {maximumValue}. Please try again.");
-                        DisplayInputBoxPrompt(prompt);
+                        validResponse = true;
                     }
                 }
                 else
@@ -160,6 +175,7 @@ namespace TB_QuestGame
                     DisplayInputBoxPrompt(prompt);
                 }
             }
+            Console.CursorVisible = false;
 
             return true;
         }
@@ -225,7 +241,7 @@ namespace TB_QuestGame
             ConsoleWindowControl.DisableResize();
             ConsoleWindowControl.DisableMaximize();
             ConsoleWindowControl.DisableMinimize();
-            Console.Title = "Harry Potter: The Philopher's Stone";
+            Console.Title = "Harry Potter: The Sorcerer's Stone";
 
             //
             // set the default console window values
@@ -381,7 +397,7 @@ namespace TB_QuestGame
                 Console.ForegroundColor = ConsoleTheme.StatusBoxForegroundColor;
             }
         }
-        
+
         /// <summary>
         /// draw the input box on the game screen
         /// </summary>
@@ -514,7 +530,7 @@ namespace TB_QuestGame
                 GetInteger($"Enter your new chamber {_gamePlayer.Name}: ", 1, _gameUniverse.GetMaxSpaceTimeLocationId(), out spaceTimeLocationId);
 
                 //
-                // validate integer as a valid space-time location id and determine accessibility
+                // validate integer as a valid location ID and determine accessibility
                 //
                 if (_gameUniverse.IsValidSpaceTimeLocationId(spaceTimeLocationId))
                 {
@@ -540,19 +556,44 @@ namespace TB_QuestGame
         #region ----- display responses to menu action choices -----
 
         /// <summary>
+        /// display the game objects' info
+        /// </summary>
+        /// <param name="gameObject"></param>
+        public void DisplayGameObjectInfo(GameObject gameObject)
+        {
+            DisplayGamePlayScreen("Current Location", Text.LookAt(gameObject), ActionMenu.ObjectMenu, "");
+        }
+
+        /// <summary>
         /// display player info
         /// </summary>
         public void DisplayPlayerInfo()
         {
-            DisplayGamePlayScreen("Player Information", Text.PlayerInfo(_gamePlayer), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Player Information", Text.PlayerInfo(_gamePlayer), ActionMenu.PlayerMenu, "");
         }
 
-        ///<summary>
+        /// <summary>
+        /// display list of game objects
+        /// </summary>
+        public void DisplayListOfAllGameObjects()
+        {
+            DisplayGamePlayScreen("List: Game Objects", Text.ListAllGameObjects(_gameUniverse.GameObjects), ActionMenu.AdminMenu, "");
+        }
+
+        /// <summary>
         /// display list of locations
         /// </summary>
-        public void DisplayListOfSpaceTimeLocations()
+        public void DisplayListOfLocations()
         {
-            DisplayGamePlayScreen("List: Locations", Text.ListSpaceTimeLocations(_gameUniverse.SpaceTimeLocations), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("List: Locations", Text.ListLocations(_gameUniverse.SpaceTimeLocations), ActionMenu.AdminMenu, "");
+        }
+
+        /// <summary>
+        /// display current inventory
+        /// </summary>
+        public void DisplayInventory()
+        {
+            DisplayGamePlayScreen("Current Inventory", Text.CurrentInventory(_gameUniverse.PlayerInventory()), ActionMenu.PlayerMenu, "");
         }
 
         ///<summary>
@@ -560,9 +601,26 @@ namespace TB_QuestGame
         /// </summary>
         public void DisplayLookAround()
         {
+            //
+            // get current location
+            //
             SpaceTimeLocation currentSpaceTimeLocation = _gameUniverse.GetSpaceTimeLocationById(_gamePlayer.SpaceTimeLocationID);
-            DisplayGamePlayScreen("Current Location", Text.LookAround(currentSpaceTimeLocation), ActionMenu.MainMenu, "");
 
+            //
+            // get list of game objects in current location
+            //
+            List<GameObject> gameObjectsInCurrentSpaceTimeLocation = _gameUniverse.GetGameObjectByLocationId(_gamePlayer.SpaceTimeLocationID);
+
+            //
+            // get list of NPCs in current location
+            //
+            List<Npc> npcsInCurrentSpactTimeLocation = _gameUniverse.GetNpcsByLocationId(_gamePlayer.SpaceTimeLocationID);
+
+            string messageBoxText = Text.LookAround(currentSpaceTimeLocation) + Environment.NewLine + Environment.NewLine;
+            messageBoxText += Text.GameObjectsChooseList(gameObjectsInCurrentSpaceTimeLocation);
+            messageBoxText += Text.NpcsChooseList(npcsInCurrentSpactTimeLocation);
+
+            DisplayGamePlayScreen("Current Location", Text.LookAround(currentSpaceTimeLocation), ActionMenu.MainMenu, "");
         }
 
         /// <summary>
@@ -571,7 +629,7 @@ namespace TB_QuestGame
         public void DisplayLocationsVisited()
         {
             //
-            // generate a list of space time locations that have been visited
+            // generate a list of locations that have been visited
             //
             List<SpaceTimeLocation> visitedSpaceTimeLocations = new List<SpaceTimeLocation>();
             foreach (int spaceTimeLocationId in _gamePlayer.LocationsVisited)
@@ -579,15 +637,268 @@ namespace TB_QuestGame
                 visitedSpaceTimeLocations.Add(_gameUniverse.GetSpaceTimeLocationById(spaceTimeLocationId));
             }
 
-            DisplayGamePlayScreen("Chambers Visited", Text.VisitedLocations(visitedSpaceTimeLocations), ActionMenu.MainMenu, "");
+            DisplayGamePlayScreen("Chambers Visited", Text.VisitedLocations(visitedSpaceTimeLocations), ActionMenu.PlayerMenu, "");
         }
 
         /// <summary>
-        /// list all of the game objects
+        /// show the get game object to look at
         /// </summary>
-        public void DisplayListOfAllGameObjects()
+        /// <returns></returns>
+        public int DisplayGetGameObjectToLookAt()
         {
-            DisplayGamePlayScreen("List: Game Objects", Text.ListAllGameObjects(_gameUniverse.GameObjects), ActionMenu.AdminMenu, "");
+            int gameObjectId = 0;
+            bool validGamerObjectId = false;
+
+            //
+            // get a list of game objects in the current location
+            //
+            List<GameObject> gameObjectsInSpaceTimeLocation = _gameUniverse.GetGameObjectByLocationId(_gamePlayer.SpaceTimeLocationID);
+
+            if (gameObjectsInSpaceTimeLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Look at a Object", Text.GameObjectsChooseList(gameObjectsInSpaceTimeLocation), ActionMenu.ObjectMenu, "");
+
+                while (!validGamerObjectId)
+                {
+                    //
+                    // get an integer from the user
+                    //
+                    GetInteger($"Enter the ID number of the object you wish to look at: ", 0, 0, out gameObjectId);
+
+                    //
+                    // validate integer as a valid game object id and in current location
+                    //
+                    if (_gameUniverse.IsValidGameObjectByLocationId(gameObjectId, _gamePlayer.SpaceTimeLocationID))
+                    {
+                        validGamerObjectId = true;
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an invalid game object ID. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Look at a Object", "It appears there are no game objects here.", ActionMenu.ObjectMenu, "");
+            }
+
+            return gameObjectId;
+        }
+
+        /// <summary>
+        /// display the player objects to collect
+        /// </summary>
+        /// <returns></returns>
+        public int DisplayGetPlayerObjectToPickUp()
+        {
+            int gameObjectsId = 0;
+            bool validGamerObjectId = false;
+
+            //
+            // get a list of player objects in the current location
+            //
+            List<PlayerObject> playerObjectsInLocation = _gameUniverse.GetPlayerObjectsByLocationId(_gamePlayer.SpaceTimeLocationID);
+
+            if (playerObjectsInLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", Text.GameObjectsChooseList(playerObjectsInLocation), ActionMenu.ObjectMenu, "");
+
+                while (!validGamerObjectId)
+                {
+                    //
+                    // get an integer from the player
+                    //
+                    GetInteger($"Enter the ID number of the onject you wish to add to your inventory: ", 0, 0, out gameObjectsId);
+
+                    //
+                    // validate integer as a valid game object id and in current location
+                    //
+                    if (_gameUniverse.IsValidPlayerObjectByLocationId(gameObjectsId, _gamePlayer.SpaceTimeLocationID))
+                    {
+                        PlayerObject playerObject = _gameUniverse.GetGameObjectById(gameObjectsId) as PlayerObject;
+                        if (playerObject.CanInventory)
+                        {
+                            validGamerObjectId = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage("It appears you may not inventory that object. Please try again.");
+                        }
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an invalid game object ID. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", "It appears there are no game objects here.", ActionMenu.ObjectMenu, "");
+            }
+            return gameObjectsId;
+        }
+
+        /// <summary>
+        /// display the information required for the player to choose an object to pick up
+        /// </summary>
+        /// <returns>game object Id</returns>
+        public int DisplayGetInventoryObjectToPutDown()
+        {
+            int playerObjectId = 0;
+            bool validInventoryObjectId = false;
+
+            if (_gameUniverse.PlayerInventory().Count > 0)
+            {
+                DisplayGamePlayScreen("Put Down Game Object", Text.GameObjectsChooseList(_gameUniverse.PlayerInventory()), ActionMenu.ObjectMenu, "");
+
+                while (!validInventoryObjectId)
+                {
+                    //
+                    // get an integer from the player
+                    //
+                    GetInteger($"Enter the Id number of the object you wish to remove from your inventory: ", 0, 0, out playerObjectId);
+
+                    //
+                    // find object in inventory
+                    // note: LINQ used, but a foreach loop may also be used 
+                    //
+                    PlayerObject objectToPutDown = _gameUniverse.PlayerInventory().FirstOrDefault(o => o.Id == playerObjectId);
+
+                    //
+                    // validate object in inventory
+                    //
+                    if (objectToPutDown != null)
+                    {
+                        validInventoryObjectId = true;
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered the Id of an object not in the inventory. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", "It appears there are no objects currently in inventory.", ActionMenu.ObjectMenu, "");
+            }
+
+            return playerObjectId;
+        }
+
+        /// <summary>
+        /// confirm removing inventory objects
+        /// </summary>
+        /// <param name="objectRemovedFromInventory"></param>
+        public void DisplayConfirmPlayerObjectRemovedFromInventory(PlayerObject objectRemovedFromInventory)
+        {
+            DisplayGamePlayScreen("Put Down Game Object", $"The {objectRemovedFromInventory.Name} has been removed from your inventory.", ActionMenu.ObjectMenu, "");
+        }
+
+        /// <summary>
+        /// confirm object added to inventory
+        /// </summary>
+        /// <param name="objectAddedToInventory">game object</param>
+        public void DisplayConfirmPlayerObjectAddedToInventory(PlayerObject objectAddedToInventory)
+        {
+            if (objectAddedToInventory.PickUpMessage != null)
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", objectAddedToInventory.PickUpMessage, ActionMenu.ObjectMenu, "");
+            }
+            else
+            {
+                DisplayGamePlayScreen("Pick Up Game Object", $"The {objectAddedToInventory} has been added to your inventory.", ActionMenu.ObjectMenu, "");
+            }
+        }
+
+        /// <summary>
+        /// display the list NPCs Objects
+        /// </summary>
+        public void DisplayListOfAllNpcObjects()
+        {
+            DisplayGamePlayScreen("List: NPC Objects", Text.ListAllNpcObjects(_gameUniverse.Npcs), ActionMenu.AdminMenu, "");
+        }
+
+        /// <summary>
+        /// display get the NPC to talk to
+        /// </summary>
+        /// <returns>NPC Id</returns>
+        public int DisplayGetNpcToTalkTo()
+        {
+            int npcId = 0;
+            bool validNpcId = false;
+
+            //
+            // get a list of NPCs in the current location
+            //
+            List<Npc> npcsInSpaceTimeLocation = _gameUniverse.GetNpcsByLocationId(_gamePlayer.SpaceTimeLocationID);
+
+            if (npcsInSpaceTimeLocation.Count > 0)
+            {
+                DisplayGamePlayScreen("Choose Character to Speak With", Text.NpcsChooseList(npcsInSpaceTimeLocation), ActionMenu.NpcMenu, "");
+
+                while (!validNpcId)
+                {
+                    //
+                    // get an integer from the player
+                    //
+                    GetInteger($"Enter the Id number of the character you wish to speak with: ", 0, 0, out npcId);
+
+                    //
+                    // validate integer as a valid NPC id and in current location
+                    //
+                    if (_gameUniverse.IsValidNpcByLocationId(npcId, _gamePlayer.SpaceTimeLocationID))
+                    {
+                        Npc npc = _gameUniverse.GetNpcById(npcId);
+                        if (npc is ISpeak)
+                        {
+                            validNpcId = true;
+                        }
+                        else
+                        {
+                            ClearInputBox();
+                            DisplayInputErrorMessage("It appears this character has nothing to say. Please try again.");
+                        }
+                    }
+                    else
+                    {
+                        ClearInputBox();
+                        DisplayInputErrorMessage("It appears you entered an invalid NPC id. Please try again.");
+                    }
+                }
+            }
+            else
+            {
+                DisplayGamePlayScreen("Choose Character to Speak With", "It appears there are no NPCs here.", ActionMenu.NpcMenu, "");
+            }
+
+            return npcId;
+        }
+
+        /// <summary>
+        /// display the message from the NPC
+        /// </summary>
+        /// <param name="npc">speaking NPC</param>
+        public void DisplayTalkTo(Npc npc)
+        {
+            ISpeak speakingNpc = npc as ISpeak;
+
+            string message = speakingNpc.Speak();
+
+            if (npc is ISpeak)
+            {
+                speakingNpc.Speak();
+            }
+            else if (message == "")
+            {
+                message = "It appears this character has nothing to say. Please try again.";
+            }
+
+            DisplayGamePlayScreen("Speak to Character", message, ActionMenu.NpcMenu, "");
         }
 
         #endregion

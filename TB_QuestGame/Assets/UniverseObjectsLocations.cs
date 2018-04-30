@@ -13,7 +13,9 @@ namespace TB_QuestGame
     {
         public static List<SpaceTimeLocation> SpaceTimeLocations = new List<SpaceTimeLocation>()
         {
-
+            ///<summary>
+            /// list locations
+            /// </summary>
             new SpaceTimeLocation
             {
                 CommonName = "Fluffy's Chamber",

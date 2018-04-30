@@ -13,6 +13,9 @@ namespace TB_QuestGame
     {
         #region ENUMERABLES
 
+        /// <summary>
+        /// race type enum
+        /// </summary>
         public enum RaceType
         {
             None,
@@ -61,11 +64,20 @@ namespace TB_QuestGame
 
         #region CONSTRUCTORS
 
+        /// <summary>
+        /// character
+        /// </summary>
         public Character()
         {
 
         }
 
+        /// <summary>
+        /// character name/race
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="race"></param>
+        /// <param name="spaceTimeLocationID"></param>
         public Character(string name, RaceType race, int spaceTimeLocationID)
         {
             _name = name;

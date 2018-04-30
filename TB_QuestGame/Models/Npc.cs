@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 namespace TB_QuestGame
 {
     /// <summary>
-    /// game object class
+    /// non-playable character class
     /// </summary>
-    public abstract class GameObject
+    public abstract class Npc : Character
     {
         public abstract int Id { get; set; }
-        public abstract string Name { get; set; }
         public abstract string Description { get; set; }
-        public abstract int SpaceTimeLocationId { get; set; }
     }
 }

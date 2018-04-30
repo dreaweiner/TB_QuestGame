@@ -30,6 +30,9 @@ namespace TB_QuestGame
         [DllImport("kernel32.dll", ExactSpelling = true)]
         private static extern IntPtr GetConsoleWindow();
 
+        /// <summary>
+        /// disable close
+        /// </summary>
         public static void DisableClose()
         {
             IntPtr handle = GetConsoleWindow();
@@ -41,6 +44,9 @@ namespace TB_QuestGame
             }
         }
 
+        /// <summary>
+        /// disable resize
+        /// </summary>
         public static void DisableResize()
         {
             IntPtr handle = GetConsoleWindow();
@@ -52,6 +58,9 @@ namespace TB_QuestGame
             }
         }
 
+        /// <summary>
+        /// disable minimize
+        /// </summary>
         public static void DisableMinimize()
         {
             IntPtr handle = GetConsoleWindow();
@@ -63,6 +72,9 @@ namespace TB_QuestGame
             }
         }
 
+        /// <summary>
+        /// disable maximize
+        /// </summary>
         public static void DisableMaximize()
         {
             IntPtr handle = GetConsoleWindow();

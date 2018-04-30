@@ -16,6 +16,10 @@ namespace TB_QuestGame
 
         #region INTITIAL GAME SETUP
 
+        /// <summary>
+        /// mission introducation screen
+        /// </summary>
+        /// <returns></returns>
         public static string MissionIntro()
         {
             string messageBoxText =
@@ -35,6 +39,10 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        /// <summary>
+        /// current location screen
+        /// </summary>
+        /// <returns></returns>
         public static string CurrrentLocationInfo()
         {
             string messageBoxText =
@@ -50,6 +58,10 @@ namespace TB_QuestGame
 
         #region Initialize Mission Text
 
+        /// <summary>
+        /// initialize mission introduction instruction
+        /// </summary>
+        /// <returns></returns>
         public static string InitializeMissionIntro()
         {
             string messageBoxText =
@@ -62,6 +74,10 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        /// <summary>
+        /// get the player's name
+        /// </summary>
+        /// <returns></returns>
         public static string InitializeMissionGetPlayerName()
         {
             string messageBoxText =
@@ -72,6 +88,11 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        /// <summary>
+        /// get player's age
+        /// </summary>
+        /// <param name="gameplayer"></param>
+        /// <returns></returns>
         public static string InitializeMissionGetPlayerAge(Player gameplayer)
         {
             string messageBoxText =
@@ -83,6 +104,11 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        /// <summary>
+        /// get player race
+        /// </summary>
+        /// <param name="gameplayer"></param>
+        /// <returns></returns>
         public static string InitializeMissionGetPlayerRace(Player gameplayer)
         {
             string messageBoxText =
@@ -108,6 +134,11 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        /// <summary>
+        /// echo back player information
+        /// </summary>
+        /// <param name="gameplayer"></param>
+        /// <returns></returns>
         public static string InitializeMissionEchoPlayerInfo(Player gameplayer)
         {
             string messageBoxText =
@@ -129,6 +160,11 @@ namespace TB_QuestGame
         
         #region MAIN MENU ACTION SCREENS
 
+        /// <summary>
+        /// player information
+        /// </summary>
+        /// <param name="gameplayer"></param>
+        /// <returns></returns>
         public static string PlayerInfo(Player gameplayer)
         {
             string messageBoxText =
@@ -140,10 +176,15 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
-        public static string ListSpaceTimeLocations(IEnumerable<SpaceTimeLocation> spaceTimeLocations)
+        /// <summary>
+        /// list locations
+        /// </summary>
+        /// <param name="locations"></param>
+        /// <returns></returns>
+        public static string ListLocations(IEnumerable<SpaceTimeLocation> spaceTimeLocations)
         {
             string messageBoxText =
-                "Space-Time Locations\n" +
+                "Locations\n" +
                 " \n" +
 
                 //
@@ -188,7 +229,7 @@ namespace TB_QuestGame
         public static string Travel(Player gametraveler, List<SpaceTimeLocation> spaceTimeLocations)
         {
             string messageBoxText =
-                $"{gametraveler.Name}, Aion Base will need to know the name of the new location.\n" +
+                $"{gametraveler.Name}, what chamber will you need to travel to determine the new location.\n" +
                 " \n" +
                 "Enter the ID number of your desired location from the table below.\n" +
                 " \n" +
@@ -243,7 +284,7 @@ namespace TB_QuestGame
         public static string VisitedLocations(IEnumerable<SpaceTimeLocation> spaceTimeLocations)
         {
             string messageBoxText =
-                "Space-Time Locations Visited\n" +
+                "Locations Visited\n" +
                 " \n" +
 
                 //
@@ -269,6 +310,12 @@ namespace TB_QuestGame
             return messageBoxText;
         }
 
+        /// <summary>
+        /// status box information
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="universe"></param>
+        /// <returns></returns>
         public static List<string> StatusBox(Player player, Universe universe)
         {
             List<string> statusBoxText = new List<string>();
@@ -297,7 +344,7 @@ namespace TB_QuestGame
                 //
                 "ID".PadRight(10) +
                 "Name".PadRight(30) +
-                "Space-Time Location ID".PadRight(10) + "\n" +
+                "Location ID".PadRight(10) + "\n" +
                 "---".PadRight(10) +
                 "----------------------".PadRight(30) +
                 "----------------------".PadRight(10) + "\n";
@@ -316,6 +363,199 @@ namespace TB_QuestGame
             }
 
             messageBoxText += gameObjectRows;
+
+            return messageBoxText;
+        }
+
+        /// <summary>
+        /// look at the game objects available
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
+        public static string LookAt(GameObject gameObject)
+        {
+            string messageBoxText = "";
+
+            messageBoxText =
+                $"{gameObject.Name}\n" +
+                " \n" +
+                gameObject.Description + " \n" +
+                " \n";
+
+            if (gameObject is PlayerObject)
+            {
+                PlayerObject playerObject = gameObject as PlayerObject;
+
+                messageBoxText += $"The {playerObject.Name} has value of {playerObject.Value} and ";
+
+                if (playerObject.CanInventory)
+                {
+                    messageBoxText += "may be added to your inventory.";
+                }
+                else
+                {
+                    messageBoxText += "may not be added to your inventory.";
+                }
+            }
+            return messageBoxText;
+        }
+        
+        /// <summary>
+        /// choose an object from the game objects
+        /// </summary>
+        /// <param name="gameObjects"></param>
+        /// <returns></returns>
+        public static string GameObjectsChooseList(IEnumerable<GameObject> gameObjects)
+        {
+            //
+            // display table name and column headers
+            //
+            string messageBoxText =
+                "Game Objects\n" +
+                " \n" +
+
+                //
+                // display table header
+                //
+                "ID".PadRight(10) +
+                "Name".PadRight(30) + " \n" +
+                "---".PadRight(10) +
+                "----------------------".PadRight(30) + "\n";
+
+            //
+            // display all traveler objects in rows
+            //
+            string gameObjectRows = null;
+            foreach (GameObject gameObject in gameObjects)
+            {
+                gameObjectRows +=
+                    $"{gameObject.Id}".PadRight(10) +
+                    $"{gameObject.Name}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += gameObjectRows;
+
+            return messageBoxText;
+        }
+
+        /// <summary>
+        /// display the current inventory
+        /// </summary>
+        /// <param name="inventory"></param>
+        /// <returns></returns>
+        public static string CurrentInventory(IEnumerable<PlayerObject> inventory)
+        {
+            string messageBoxText = "";
+
+            //
+            // display header
+            //
+            messageBoxText =
+            "ID".PadRight(10) +
+            "Name".PadRight(30) +
+            "Type".PadRight(10) +
+            "\n" +
+            "---".PadRight(10) +
+            "----------------------------".PadRight(30) +
+            "----------------------".PadRight(10) +
+            "\n";
+
+            //
+            // display all traveler objects in rows
+            //
+            string inventoryObjectRows = null;
+            foreach (PlayerObject inventoryObject in inventory)
+            {
+                inventoryObjectRows +=
+                    $"{inventoryObject.Id}".PadRight(10) +
+                    $"{inventoryObject.Name}".PadRight(30) +
+                    $"{inventoryObject.Type}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += inventoryObjectRows;
+
+            return messageBoxText;
+        }
+
+        /// <summary>
+        /// list the NPC objects
+        /// </summary>
+        /// <param name="npcObjects"></param>
+        /// <returns></returns>
+        public static string ListAllNpcObjects(IEnumerable<Npc> npcObjects)
+        {
+            //
+            // display table name and column headers
+            //
+            string messageBoxText =
+                "NPC Objects\n" +
+                " \n" +
+
+                //
+                // display table header
+                //
+                "ID".PadRight(10) +
+                "Name".PadRight(30) +
+                "Location Id".PadRight(10) + "\n" +
+                "---".PadRight(10) +
+                "----------------------".PadRight(30) +
+                "----------------------".PadRight(10) + "\n";
+
+            //
+            // display all npc objects in rows
+            //
+            string npcObjectRows = null;
+            foreach (Npc npcObject in npcObjects)
+            {
+                npcObjectRows +=
+                    $"{npcObject.Id}".PadRight(10) +
+                    $"{npcObject.Name}".PadRight(30) +
+                    $"{npcObject.SpaceTimeLocationID}".PadRight(10) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += npcObjectRows;
+
+            return messageBoxText;
+        }
+
+        /// <summary>
+        /// choose the NPC
+        /// </summary>
+        /// <param name="npcs"></param>
+        /// <returns></returns>
+        public static string NpcsChooseList(IEnumerable<Npc> npcs)
+        {
+            //
+            // display table name and column headers
+            //
+            string messageBoxText =
+                "NPCs\n" +
+                " \n" +
+
+                //
+                // display table header
+                //
+                "ID".PadRight(10) +
+                "Name".PadRight(30) + "\n" +
+                "---".PadRight(10) +
+                "----------------------".PadRight(30) + "\n";
+
+            //
+            // display all NPCs in rows
+            //
+            string npcRows = null;
+            foreach (Npc npc in npcs)
+            {
+                npcRows +=
+                    $"{npc.Id}".PadRight(10) +
+                    $"{npc.Name}".PadRight(30) +
+                    Environment.NewLine;
+            }
+
+            messageBoxText += npcRows;
 
             return messageBoxText;
         }

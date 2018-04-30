@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 namespace TB_QuestGame
 {
     /// <summary>
-    /// player object type enum
+    /// ISpeak interface
     /// </summary>
-    public enum PlayerObjectType
+    interface ISpeak
     {
-        Potion,
-        Weapon,
-        Information, 
-        Medicine
+        List<string> Messages { get; set; }
+        string Speak();
     }
 }

@@ -14,20 +14,27 @@ namespace TB_QuestGame
         None,
         MissionSetup,
         LookAround,
-        LookAt,
-        PickUpItem,
-        PickUpTreasure,
-        PutDownItem,
-        PutDownTreasure,
         Travel,
+
+        PlayerMenu,
         PlayerInfo,
-        PlayerInventory,
-        PlayerTreasure,
-        PlayerLocationsVisited,
-        ListSpaceTimeLocations,
-        ListDestinations,
-        ListItems,
-        ListTreasures,
+        Inventory,
+        LocationsVisited,
+
+        ObjectMenu,
+        LookAt,
+        PickUp,
+        PutDown,
+
+        NonplayerCharacterMenu,
+        TalkTo,
+
+        AdminMenu,
+        ListLocations,
+        ListGameObjects,
+        ListNonplayerCharacters,
+
+        ReturnToMainMenu,
         Exit
     }
 }
