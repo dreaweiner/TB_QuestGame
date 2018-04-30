@@ -279,7 +279,7 @@ namespace TB_QuestGame
                 //
                 // give access to chamber 2
                 //
-                //if ()
+                //if (_gameUniverse.SpaceTimeLocations.Contains(1))
                 //{
                 //  _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
                 //}
