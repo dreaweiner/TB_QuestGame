@@ -224,9 +224,50 @@ namespace TB_QuestGame
                 IsConsumable = true,
                 IsDeadly = false,
                 Type = PlayerObjectType.Potion
-            }
+            },
 
-            //add an information piece for the final room
+            new PlayerObject
+            {
+                Id = 16,
+                Name = "Mirror of Erised",
+                SpaceTimeLocationId = 6,
+                Description = "A special mirror which reflects the deepest desires of those who look at it.",
+                PickUpMessage = "I show not your face but your heart's desire.",
+                IsVisible = true,
+                CanInventory = true,
+                Value = 25,
+                IsConsumable = true,
+                IsDeadly = false,
+                Type = PlayerObjectType.Information
+            },
+
+            new PlayerObject
+            {
+                Id = 17,
+                Name = "Sorcerer's Stone",
+                SpaceTimeLocationId = 6,
+                Description = "Philosopher's Stone, a legendary substance with astonishing powers. The Stone will transform any metal into pure gold. It also produces the Elixir of Life, which will make the drinker immortal.",
+                PickUpMessage = "I make myself available to those who want me but don't wish to use me.",
+                IsVisible = true,
+                CanInventory = true,
+                Value = 25,
+                IsConsumable = true,
+                IsDeadly = false,
+                Type = PlayerObjectType.Medicine
+            },
+
+            new PlayerObject
+            {
+                Id = 18,
+                Name = "Devil's Snare",
+                SpaceTimeLocationId = 2,
+                Description = "Devil's Snare is a plant with the magical ability to constrict or strangle anything in its surrounding environment or something that happens to touch it. Struggling or resistance to Devil's Snare will cause the plant to exert a greater force of constriction.",
+                PickUpMessage = "With knowledge comes power.",
+                IsVisible = true,
+                CanInventory = true,
+                Value = 25,
+                Type = PlayerObjectType.Information
+            },
         };
     }
 }

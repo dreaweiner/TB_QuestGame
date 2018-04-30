@@ -281,8 +281,13 @@ namespace TB_QuestGame
                 //
                 //if ()
                 //{
-                  //  _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
+                //  _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
                 //}
+
+                //
+                // give access to chamber 4
+                //
+                
 
             }
         }
@@ -433,10 +438,13 @@ namespace TB_QuestGame
                     case PlayerObjectType.Weapon:
                         _gamePlayer.ExperiencePoints += playerObject.Value;
 
-                        //foreach (var gameObjects in _gameUniverse.SpaceTimeLocations)
-                        //{
-                          //  _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
-                        //}
+                        foreach (var gameObjects in _gameUniverse.SpaceTimeLocations)
+                        {
+                            //_gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
+                            gameObjects.Accessible = true;
+                            
+                        }
+                        
 
                         //
                         // remove object from game
@@ -453,8 +461,6 @@ namespace TB_QuestGame
                         {
                             _gamePlayer.Lives -= 1;
                         }
-                        
-                        
                         break;
                     case PlayerObjectType.Potion:
                         _gamePlayer.Health += playerObject.Value;
@@ -570,20 +576,20 @@ namespace TB_QuestGame
                 // display information for the object chosen
                 //
                 _gameConsoleView.DisplayTalkTo(npc);
-
-                //
-                // add life 
-                //
-                if (_gamePlayer.Lives > 1)
-                {
-                    _gamePlayer.Lives++;
-                }
-
+                
                 //
                 // update experience points for adding objects
                 //
                 Civilian civilian = npc as Civilian;
                 _gamePlayer.ExperiencePoints += civilian.ExperiencePoints;
+                
+                //
+                // remove life 
+                //
+                if (civilian.IsDeadly)
+                {
+                    _gamePlayer.Lives -= 1;
+                }
             }
         }
 
