@@ -279,10 +279,10 @@ namespace TB_QuestGame
                 //
                 // give access to chamber 2
                 //
-                if ()
-                {
-                    _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
-                }
+                //if ()
+                //{
+                  //  _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
+                //}
 
             }
         }
@@ -432,7 +432,12 @@ namespace TB_QuestGame
                         break;
                     case PlayerObjectType.Weapon:
                         _gamePlayer.ExperiencePoints += playerObject.Value;
-                        
+
+                        //foreach (var gameObjects in _gameUniverse.SpaceTimeLocations)
+                        //{
+                          //  _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
+                        //}
+
                         //
                         // remove object from game
                         //
@@ -448,6 +453,8 @@ namespace TB_QuestGame
                         {
                             _gamePlayer.Lives -= 1;
                         }
+                        
+                        
                         break;
                     case PlayerObjectType.Potion:
                         _gamePlayer.Health += playerObject.Value;
