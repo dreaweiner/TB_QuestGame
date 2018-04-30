@@ -276,6 +276,14 @@ namespace TB_QuestGame
                 //
                 _gamePlayer.ExperiencePoints += _currentLocation.ExperiencePoints;
 
+                //
+                // give access to chamber 2
+                //
+                if ()
+                {
+                    _gameUniverse.GetSpaceTimeLocationById(2).Accessible = true;
+                }
+
             }
         }
 
@@ -345,7 +353,7 @@ namespace TB_QuestGame
                 //
                 // update experience points for adding objects
                 //
-                _gamePlayer.ExperiencePoints += _gamePlayer.ExperiencePoints;
+                _gamePlayer.ExperiencePoints ++;
 
                 //
                 // add life if health greater than 100
